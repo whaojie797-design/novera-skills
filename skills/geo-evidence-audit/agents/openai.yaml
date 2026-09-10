@@ -1,0 +1,31 @@
+# Cross-client compatible description. Trigger scenarios must be equivalent
+# to the SKILL.md description (wording may differ).
+name: geo-evidence-audit
+version: 0.1.0
+description: >
+  Deterministic, offline auditor for geographic claims in text assets
+  (markdown, HTML, JSON, CSV). Extracts phone country codes, coordinates,
+  city/country names, currencies, timezones, locale/hreflang tags, and map
+  embeds, then cross-checks them for contradictions (e.g. a claimed Shanghai
+  office with a +1 phone number, a timezone inconsistent with the claimed
+  city, coordinates outside the claimed country) and labels every claim with
+  an evidence strength (explicit / inferred / unverified). Emits findings
+  with file:line locations and an optional JSON report.
+when_to_use:
+  - Audit geographic consistency of a landing page, company profile, or store directory
+  - Find contradictions between location claims and phone codes / timezones / currencies / coordinates / map embeds
+  - Check hreflang and locale tags against claimed regions
+  - List unsupported (unverified) location claims and label evidence strength
+  - Produce a geo-consistency report (text or JSON)
+when_not_to_use:
+  - Building geocoding services or map applications
+  - Verifying whether a claimed office truly exists (no network access, consistency audit only)
+  - Precise reverse geocoding of coordinates (country-level bbox only)
+  - Non-geo audits such as code security or supply-chain review
+cli:
+  entry: scripts/audit.py
+  runtime: python3
+  exit_codes:
+    0: no findings
+    1: findings present (contradictions or unverified claims)
+    2: usage or input error

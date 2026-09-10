@@ -1,0 +1,74 @@
+name: skills-ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "skills/geo-evidence-audit/**"
+      - "tests/geo-evidence-audit/**"
+      - "tools/**"
+      - ".github/workflows/**"
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.9", "3.12"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: py39 syntax gate
+        run: python tools/py39_gate.py skills/geo-evidence-audit/scripts
+
+      - name: SKILL.md line gate (<500)
+        shell: bash
+        run: |
+          lines=$(wc -l < skills/geo-evidence-audit/SKILL.md)
+          echo "SKILL.md lines: $lines"
+          if [ "$lines" -ge 500 ]; then
+            echo "::error::SKILL.md exceeds the 500-line limit"
+            exit 1
+          fi
+
+      - name: stdlib zero-dep gate (import scan)
+        shell: bash
+        run: |
+          if grep -rhE "^(import|from) " skills/geo-evidence-audit/scripts/ \
+            | grep -vE "^(import (argparse|ast|csv|fnmatch|json|os|re|sys)|from (dataclasses|extract|geo_data|html|json|os|pathlib|report|rules|sys|typing|unicodedata|urllib)([ .]|$))"; then
+            echo "::error::non-stdlib import found in scripts/"
+            exit 1
+          fi
+
+      - name: Install pytest
+        run: python -m pip install pytest
+
+      - name: Run test suite
+        run: python -m pytest tests/geo-evidence-audit/ -q
+
+      - name: Fixture smoke (expected-failure cases wrapped in if)
+        shell: bash
+        run: |
+          set -e
+          # Expected exit 1: contradiction fixture. Wrapped in if -- a bare
+          # invocation would abort under set -e; `|| true` is forbidden
+          # because it would swallow exit 2 as well.
+          if python skills/geo-evidence-audit/scripts/audit.py skills/geo-evidence-audit/fixtures/phone-mismatch.md > /dev/null; then
+            echo "::error::expected exit 1, got 0"
+            exit 1
+          fi
+          if python skills/geo-evidence-audit/scripts/audit.py skills/geo-evidence-audit/fixtures/e2e-mixed-dir/ > /dev/null; then
+            echo "::error::expected exit 1, got 0"
+            exit 1
+          fi
+          # Expected exit 0: clean fixture must stay clean.
+          python skills/geo-evidence-audit/scripts/audit.py skills/geo-evidence-audit/fixtures/consistent-office-cn.md > /dev/null
+          echo "smoke OK"

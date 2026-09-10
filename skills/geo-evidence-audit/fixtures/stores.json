@@ -1,0 +1,6 @@
+[
+  {"name": "Orchard Flagship", "city": "Singapore", "phone": "+65 6222 5588", "currency": "SGD", "timezone": "Asia/Singapore"},
+  {"name": "Kurfuerstendamm", "city": "Berlin", "phone": "+49 30 555 0177", "currency": "EUR", "timezone": "Europe/Berlin"},
+  {"name": "Ginza", "city": "Tokyo", "phone": "+81 3 5555 0188", "currency": "JPY", "timezone": "Asia/Tokyo"},
+  {"name": "Oxford Street", "city": "London", "phone": "+44 20 7946 0199", "currency": "EUR", "timezone": "Europe/London"}
+]
