@@ -1,0 +1,32 @@
+# Cross-client compatible description. Trigger scenarios must be equivalent
+# to the SKILL.md description (wording may differ).
+name: ai-tool-directory-publisher
+version: 0.1.0
+description: >
+  Offline, deterministic auditor for AI tool directory submission materials.
+  Validates listing files (JSON/YAML/Markdown) against per-directory requirement
+  snapshots (Futurepedia, Toolify, There's An AI For That, AI Tools Directory,
+  TopAI.tools, AITools.fyi): required fields, length limits, pricing/category
+  enums, URL format, screenshot specs. Audits cross-directory consistency of the
+  same tool's listings (name/url/pricing/version drift). Tracks submission status
+  in a structured CSV/JSON table. Does NOT auto-submit, does NOT crawl directory
+  sites, does NOT guarantee acceptance, and requires manual submission by the user.
+when_to_use:
+  - Prepare an AI tool for submission to AI tool directories
+  - Validate listing materials against a directory's field requirements
+  - Find contradictions between the same tool's listings on different directories
+  - Generate a missing-materials checklist before submission
+  - Maintain and validate a submission status tracker (submitted/under-review/listed/rejected)
+when_not_to_use:
+  - Auto-submitting to directories (manual submission only)
+  - Crawling or scraping directory sites
+  - Auditing geographic claims inside listings (use geo-evidence-audit)
+  - Guaranteeing listing acceptance or SEO improvement
+cli:
+  entry: scripts/audit.py
+  runtime: python3
+  subcommands: [validate, diff, status]
+  exit_codes:
+    0: no findings
+    1: findings present (validation issues, drift, or status-table problems)
+    2: usage or input error

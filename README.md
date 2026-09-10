@@ -13,13 +13,14 @@ Each skill in this repository audits one class of claims that AI-generated asset
 | Skill | Status | One-liner |
 |-------|--------|-----------|
 | [`skills/geo-evidence-audit`](skills/geo-evidence-audit/SKILL.md) | **v0.1.0 released** | Audits geographic claims in text assets for internal consistency: phone country codes vs claimed cities, timezones, currencies, coordinates vs country bounding boxes, hreflang tags, map embeds — and labels every claim with an evidence strength (explicit / inferred / unverified). |
+| [`skills/ai-tool-directory-publisher`](skills/ai-tool-directory-publisher/SKILL.md) | **v0.1.0 released** | Prepares and audits AI tool directory submissions: validates listing materials against per-directory requirement snapshots (Futurepedia, Toolify, There's An AI For That, and more), finds drift between the same tool's listings across directories, and tracks submission status. Does NOT auto-submit, does NOT crawl, does NOT guarantee acceptance. |
 
 ## Roadmap
 
 | # | Slug | Status | Scope |
 |---|------|--------|-------|
 | 1 | `geo-evidence-audit` | **released** (v0.1.0) | Geo-claim consistency audit |
-| 2 | `ai-tool-directory-publisher` | planned | Scope being defined |
+| 2 | `ai-tool-directory-publisher` | **released** (v0.1.0) | Directory-submission materials, cross-directory consistency, submission status |
 | 3 | `skill-eval-harness` | planned | Scope being defined |
 | 4 | `skill-supply-chain-audit` | planned | Source-side supply-chain profiling for third-party skills (repository health, script network/install surface, permissions, distribution risk) — complements [skill-sentry](https://github.com/whaojie797-design/skill-sentry), which audits skills at runtime locally |
 | 5–10 | *to be defined* | planned | Names and scope not yet fixed |
@@ -100,13 +101,14 @@ MAJOR = breaking change to triggers / CLI / output schema · MINOR = new signals
 | 技能 | 状态 | 一句话说明 |
 |------|------|-----------|
 | [`skills/geo-evidence-audit`](skills/geo-evidence-audit/SKILL.md) | **v0.1.0 已发布** | 审计文本资产中地理声称的内部一致性：电话区号与声称城市、时区、货币、坐标与国家外包框、hreflang 标记、地图嵌入的交叉核对，并为每条声称标注证据强度（explicit / inferred / unverified）。 |
+| [`skills/ai-tool-directory-publisher`](skills/ai-tool-directory-publisher/SKILL.md) | **v0.1.0 已发布** | 为 AI 工具目录站准备与审计提交材料：按各站字段要求快照（Futurepedia、Toolify、There's An AI For That 等）校验 listing 材料、发现同一工具跨目录信息漂移、维护提交状态表。不自动提交、不爬站、不承诺收录。 |
 
 ## 路线图
 
 | # | Slug | 状态 | 范围 |
 |---|------|------|------|
 | 1 | `geo-evidence-audit` | **已发布**（v0.1.0） | 地理声称一致性审计 |
-| 2 | `ai-tool-directory-publisher` | 规划中 | 范围定义中 |
+| 2 | `ai-tool-directory-publisher` | **已发布**（v0.1.0） | 目录站提交材料、跨目录一致性、提交状态 |
 | 3 | `skill-eval-harness` | 规划中 | 范围定义中 |
 | 4 | `skill-supply-chain-audit` | 规划中 | 第三方 skill 的来源侧供应链画像（仓库健康度、脚本网络/安装面、权限、分发风险）——与 [skill-sentry](https://github.com/whaojie797-design/skill-sentry)（本地运行时审计）互补 |
 | 5–10 | *待定* | 规划中 | 名称与范围尚未确定 |

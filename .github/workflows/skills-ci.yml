@@ -6,6 +6,8 @@ on:
     paths:
       - "skills/geo-evidence-audit/**"
       - "tests/geo-evidence-audit/**"
+      - "skills/ai-tool-directory-publisher/**"
+      - "tests/ai-tool-directory-publisher/**"
       - "tools/**"
       - ".github/workflows/**"
   pull_request:
@@ -27,49 +29,68 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      # --- repo-wide syntax gate over both skills ---
       - name: py39 syntax gate
-        run: python tools/py39_gate.py skills/geo-evidence-audit/scripts
+        run: python tools/py39_gate.py skills/geo-evidence-audit/scripts skills/ai-tool-directory-publisher/scripts
 
-      - name: SKILL.md line gate (<500)
+      # --- SKILL.md line gates (<500) ---
+      - name: SKILL.md line gates
         shell: bash
         run: |
-          lines=$(wc -l < skills/geo-evidence-audit/SKILL.md)
-          echo "SKILL.md lines: $lines"
-          if [ "$lines" -ge 500 ]; then
-            echo "::error::SKILL.md exceeds the 500-line limit"
-            exit 1
-          fi
+          for skill in geo-evidence-audit ai-tool-directory-publisher; do
+            lines=$(wc -l < "skills/$skill/SKILL.md")
+            echo "skills/$skill/SKILL.md lines: $lines"
+            if [ "$lines" -ge 500 ]; then
+              echo "::error::skills/$skill/SKILL.md exceeds the 500-line limit"
+              exit 1
+            fi
+          done
 
-      - name: stdlib zero-dep gate (import scan)
+      # --- stdlib zero-dep gates (import scan per skill) ---
+      - name: stdlib zero-dep gate (geo-evidence-audit)
         shell: bash
         run: |
           if grep -rhE "^(import|from) " skills/geo-evidence-audit/scripts/ \
             | grep -vE "^(import (argparse|ast|csv|fnmatch|json|os|re|sys)|from (dataclasses|extract|geo_data|html|json|os|pathlib|report|rules|sys|typing|unicodedata|urllib)([ .]|$))"; then
-            echo "::error::non-stdlib import found in scripts/"
+            echo "::error::non-stdlib import found in geo-evidence-audit/scripts/"
+            exit 1
+          fi
+
+      - name: stdlib zero-dep gate (ai-tool-directory-publisher)
+        shell: bash
+        run: |
+          if grep -rhE "^(import|from) " skills/ai-tool-directory-publisher/scripts/ \
+            | grep -vE "^(import (argparse|ast|csv|fnmatch|json|os|re|sys)|from (audit|checkers|dataclasses|datetime|directory_data|fnmatch|json|listing|os|re|report|sys|typing|unicodedata|urllib)([ .]|$))"; then
+            echo "::error::non-stdlib import found in ai-tool-directory-publisher/scripts/"
             exit 1
           fi
 
       - name: Install pytest
         run: python -m pip install pytest
 
-      - name: Run test suite
+      # --- full test suites ---
+      - name: Run test suite (geo-evidence-audit)
         run: python -m pytest tests/geo-evidence-audit/ -q
 
-      - name: Fixture smoke (expected-failure cases wrapped in if)
+      - name: Run test suite (ai-tool-directory-publisher)
+        run: python -m pytest tests/ai-tool-directory-publisher/ -q
+
+      # --- fixture smoke, expected-failure cases wrapped in if ---
+      - name: Fixture smoke (both skills)
         shell: bash
         run: |
           set -e
-          # Expected exit 1: contradiction fixture. Wrapped in if -- a bare
-          # invocation would abort under set -e; `|| true` is forbidden
-          # because it would swallow exit 2 as well.
+          # geo-evidence-audit: expected exit 1 (bare invocation aborts under set -e;
+          # `|| true` is forbidden because it would swallow exit 2 as well).
           if python skills/geo-evidence-audit/scripts/audit.py skills/geo-evidence-audit/fixtures/phone-mismatch.md > /dev/null; then
-            echo "::error::expected exit 1, got 0"
+            echo "::error::geo-evidence-audit: expected exit 1, got 0"
             exit 1
           fi
-          if python skills/geo-evidence-audit/scripts/audit.py skills/geo-evidence-audit/fixtures/e2e-mixed-dir/ > /dev/null; then
-            echo "::error::expected exit 1, got 0"
-            exit 1
-          fi
-          # Expected exit 0: clean fixture must stay clean.
           python skills/geo-evidence-audit/scripts/audit.py skills/geo-evidence-audit/fixtures/consistent-office-cn.md > /dev/null
-          echo "smoke OK"
+          # ai-tool-directory-publisher: expected exit 1 on validate, exit 0 on clean listing.
+          if python skills/ai-tool-directory-publisher/scripts/audit.py validate skills/ai-tool-directory-publisher/fixtures/bad-pricing.json > /dev/null; then
+            echo "::error::ai-tool-directory-publisher: expected exit 1, got 0"
+            exit 1
+          fi
+          python skills/ai-tool-directory-publisher/scripts/audit.py validate skills/ai-tool-directory-publisher/fixtures/valid-listing.json > /dev/null
+          echo "smoke OK (both skills)"

@@ -1,0 +1,11 @@
+{
+  "name": "Novera ProofReader",
+  "tagline": "The best AI writing assistant for teams and enterprises everywhere, with unmatched quality and speed",
+  "description": "Novera ProofReader checks technical documentation for clarity, consistency, and terminology issues. It integrates with your docs workflow and highlights suggested fixes inline for review.",
+  "category": "Productivity",
+  "pricing": "freemium",
+  "url": "https://example.com/novera-proofreader",
+  "features": ["Terminology checks", "Style suggestions", "CI integration"],
+  "screenshot": "1280x720 PNG",
+  "version": "1.2.0"
+}
