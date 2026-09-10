@@ -1,0 +1,21 @@
+﻿# fixture<TAB>expected_exit — per docs/DESIGN-ai-tool-directory-publisher-v0.1.md section 7
+# multi-subcommand fixtures are marked with the validate-subcommand exit code;
+# diff/status expectations live in tests/ai-tool-directory-publisher/.
+valid-listing.json	0
+valid-listing.yaml	0
+missing-tagline.json	1
+tagline-too-long.json	1
+bad-pricing.json	1
+bad-url.json	1
+screenshot-spec.md	1
+no-listing-structure.md	2
+empty.txt	0
+valid-pack	0
+pricing-drift-pack	1
+version-drift-pack	1
+case-diff-pack	0
+status-valid.csv	0
+status-bad.csv	1
+status-empty.csv	2
+rejected-resubmitted.csv	0
+e2e-mixed-dir	1

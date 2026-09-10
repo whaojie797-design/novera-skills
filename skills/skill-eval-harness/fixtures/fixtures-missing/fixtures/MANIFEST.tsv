@@ -1,0 +1,3 @@
+﻿# fixture contract for fixtures-missing pack
+# expected_exit is declared metadata; the harness never runs fixtures
+fixtures/does-not-exist.json	0

@@ -1,0 +1,21 @@
+﻿# fixture contract for skill-eval-harness self-test packages
+# format: relpath<TAB>expected_exit  (expected exit code when evaluated under the novera profile)
+# minimal-ok is listed at its novera-profile expectation (exit 1); under --profile minimal it exits 0
+fixtures/bad-frontmatter/SKILL.md	1
+fixtures/broken-syntax/SKILL.md	1
+fixtures/comment-mention/SKILL.md	0
+fixtures/e2e-demo/SKILL.md	1
+fixtures/empty-references/SKILL.md	1
+fixtures/fixtures-missing/SKILL.md	1
+fixtures/good-skill/SKILL.md	0
+fixtures/line-499/SKILL.md	0
+fixtures/minimal-ok/SKILL.md	1
+fixtures/missing-triggers/SKILL.md	1
+fixtures/network-call/SKILL.md	1
+fixtures/no-exit-code-doc/SKILL.md	1
+fixtures/no-openai-yaml/SKILL.md	1
+fixtures/not-a-skill/notes.txt	2
+fixtures/readme-in-skill/SKILL.md	1
+fixtures/third-party-import/SKILL.md	1
+fixtures/too-long-skillmd/SKILL.md	1
+fixtures/urllib-parse-ok/SKILL.md	0

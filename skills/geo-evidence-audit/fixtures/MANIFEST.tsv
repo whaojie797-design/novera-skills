@@ -1,0 +1,16 @@
+﻿# fixture<TAB>expected_exit — per docs/DESIGN-geo-evidence-audit-v0.1.md section 7
+consistent-office-cn.md	0
+consistent-office-de.html	0
+phone-mismatch.md	1
+timezone-mismatch.md	1
+currency-mismatch.md	1
+coord-outside-bbox.md	1
+hreflang-mismatch.html	1
+map-embed-mismatch.html	1
+unverified-city.md	1
+multi-contradictions.md	1
+stores.json	1
+offices.csv	1
+no-geo-claims.md	0
+empty.txt	0
+e2e-mixed-dir	1

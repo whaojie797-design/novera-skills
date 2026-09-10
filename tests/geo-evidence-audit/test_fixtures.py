@@ -2,7 +2,7 @@
 
 import pytest
 
-from conftest import E2E_DIR, FIXTURES, run_cli
+from tests.conftest import GEO_E2E_DIR as E2E_DIR, GEO_FIXTURES as FIXTURES, geo_run as run_cli
 
 # (fixture name, expected exit code) -- from DESIGN-geo-evidence-audit-v0.1.md section 7
 CASES = [

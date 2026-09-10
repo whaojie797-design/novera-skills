@@ -8,11 +8,17 @@ on:
       - "tests/geo-evidence-audit/**"
       - "skills/ai-tool-directory-publisher/**"
       - "tests/ai-tool-directory-publisher/**"
+      - "skills/skill-eval-harness/**"
+      - "tests/skill-eval-harness/**"
       - "tools/**"
       - ".github/workflows/**"
+      - "pytest.ini"
   pull_request:
     branches: [main]
   workflow_dispatch:
+
+env:
+  SKILLS: "geo-evidence-audit ai-tool-directory-publisher skill-eval-harness"
 
 jobs:
   test:
@@ -29,15 +35,15 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # --- repo-wide syntax gate over both skills ---
+      # --- repo-wide syntax gate over all released skills ---
       - name: py39 syntax gate
-        run: python tools/py39_gate.py skills/geo-evidence-audit/scripts skills/ai-tool-directory-publisher/scripts
+        run: python tools/py39_gate.py skills/geo-evidence-audit/scripts skills/ai-tool-directory-publisher/scripts skills/skill-eval-harness/scripts
 
       # --- SKILL.md line gates (<500) ---
       - name: SKILL.md line gates
         shell: bash
         run: |
-          for skill in geo-evidence-audit ai-tool-directory-publisher; do
+          for skill in $SKILLS; do
             lines=$(wc -l < "skills/$skill/SKILL.md")
             echo "skills/$skill/SKILL.md lines: $lines"
             if [ "$lines" -ge 500 ]; then
@@ -65,6 +71,15 @@ jobs:
             exit 1
           fi
 
+      - name: stdlib zero-dep gate (skill-eval-harness)
+        shell: bash
+        run: |
+          if grep -rhE "^(import|from) " skills/skill-eval-harness/scripts/ \
+            | grep -vE "^(import (argparse|ast|fnmatch|json|os|re|sys)|from (audit|checkers|dataclasses|eval_rules|report|skparse)([ .]|$))"; then
+            echo "::error::non-stdlib import found in skill-eval-harness/scripts/"
+            exit 1
+          fi
+
       - name: Install pytest
         run: python -m pip install pytest
 
@@ -75,8 +90,22 @@ jobs:
       - name: Run test suite (ai-tool-directory-publisher)
         run: python -m pytest tests/ai-tool-directory-publisher/ -q
 
+      - name: Run test suite (skill-eval-harness)
+        run: python -m pytest tests/skill-eval-harness/ -q
+
+      # --- bootstrap: the harness evaluates every released skill (novera profile) ---
+      - name: Bootstrap - eval-harness evaluates all own skills
+        shell: bash
+        run: |
+          set -e
+          for skill in $SKILLS; do
+            echo "evaluating skills/$skill ..."
+            python skills/skill-eval-harness/scripts/audit.py "skills/$skill" > /dev/null
+          done
+          echo "bootstrap OK (all own skills pass novera profile)"
+
       # --- fixture smoke, expected-failure cases wrapped in if ---
-      - name: Fixture smoke (both skills)
+      - name: Fixture smoke (all skills)
         shell: bash
         run: |
           set -e
@@ -93,4 +122,13 @@ jobs:
             exit 1
           fi
           python skills/ai-tool-directory-publisher/scripts/audit.py validate skills/ai-tool-directory-publisher/fixtures/valid-listing.json > /dev/null
-          echo "smoke OK (both skills)"
+          # skill-eval-harness: expected exit 1 on a bad fixture, exit 2 without SKILL.md.
+          if python skills/skill-eval-harness/scripts/audit.py skills/skill-eval-harness/fixtures/bad-frontmatter > /dev/null; then
+            echo "::error::skill-eval-harness: expected exit 1, got 0"
+            exit 1
+          fi
+          if python skills/skill-eval-harness/scripts/audit.py skills/skill-eval-harness/fixtures/not-a-skill > /dev/null 2>&1; then
+            echo "::error::skill-eval-harness: expected exit 2 (no SKILL.md), got 0"
+            exit 1
+          fi
+          echo "smoke OK (all skills)"

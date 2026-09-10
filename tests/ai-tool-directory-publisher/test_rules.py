@@ -3,7 +3,7 @@
 import json
 import re
 
-from conftest import FIXTURES, run_cli
+from tests.conftest import PUB_FIXTURES as FIXTURES, pub_run as run_cli
 
 FINDING_KEYS = {"file", "line", "rule", "strength", "field", "value", "expected"}
 

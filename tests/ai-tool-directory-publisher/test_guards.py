@@ -4,7 +4,7 @@ import ast
 import re
 from pathlib import Path
 
-from conftest import SKILL_DIR
+from tests.conftest import PUB_SKILL_DIR as SKILL_DIR
 
 # Standard-library modules allowed inside scripts/ (plus intra-skill imports below).
 ALLOWED_STDLIB = {

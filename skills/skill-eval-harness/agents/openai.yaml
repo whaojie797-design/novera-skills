@@ -1,0 +1,35 @@
+# Cross-client compatible description. Trigger scenarios must be equivalent
+# to the SKILL.md description (wording may differ).
+name: skill-eval-harness
+version: 0.1.0
+description: >
+  Deterministic, offline evaluator for Agent Skill packages. Assesses any skill
+  directory (SKILL.md + scripts/ + references/ + fixtures/) against a checkable
+  baseline: SKILL.md frontmatter discipline (only name and description), line
+  budget, trigger/non-trigger/end-to-end inventory (existence, or exact 8+4+1
+  counts under the novera profile), exit-code semantics declaration, scripts
+  free of third-party imports and network/spawn calls via AST analysis, fixtures
+  contract presence, and structural integrity (agents/openai.yaml consistency,
+  non-empty references/, no stray README/CHANGELOG). Emits per-finding reports
+  with file:line locations in text or JSON. Pass/fail per check only - no
+  subjective scoring. Does NOT execute the evaluated skill's scripts, does NOT
+  detect malicious behavior (that is skill-sentry's scope), and does NOT analyze
+  provenance (that is skill-supply-chain-audit's scope).
+when_to_use:
+  - Pre-release self-check for a skill author
+  - Inspect a third-party skill package before installing it
+  - Verify SKILL.md compliance (frontmatter fields, line budget, trigger inventory)
+  - Check skill scripts for third-party imports or network/spawn calls
+  - Repeatable skill-package evaluation in CI with JSON reports
+when_not_to_use:
+  - Detecting malicious behavior or backdoors (use skill-sentry)
+  - Analyzing provenance, dependencies origin, or maintainers (use skill-supply-chain-audit)
+  - Building or modifying repository CI workflows
+  - Scoring, ranking, or rating skills (pass/fail findings only)
+cli:
+  entry: scripts/audit.py
+  runtime: python3
+  exit_codes:
+    0: all checks passed
+    1: findings present
+    2: usage or input error (missing dir, no SKILL.md, bad args)

@@ -4,7 +4,7 @@ import ast
 import re
 from pathlib import Path
 
-from conftest import AUDIT, SKILL_DIR, run_cli
+from tests.conftest import GEO_SKILL_DIR as SKILL_DIR, geo_run as run_cli
 
 # Standard-library modules allowed inside scripts/ (plus intra-skill imports below).
 ALLOWED_STDLIB = {
@@ -98,4 +98,4 @@ def test_openai_yaml_declares_name_and_exit_codes():
 def test_entry_point_compiles_and_reports_usage_error():
     code, out, err = run_cli([])
     assert code == 2, "bare invocation (no PATH) must exit 2\n%s%s" % (out, err)
-    assert AUDIT.exists()
+    assert (SKILL_DIR / "scripts" / "audit.py").exists()

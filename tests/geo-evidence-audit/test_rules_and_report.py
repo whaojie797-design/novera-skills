@@ -3,7 +3,7 @@
 import json
 import re
 
-from conftest import E2E_DIR, FIXTURES, run_cli
+from tests.conftest import GEO_E2E_DIR as E2E_DIR, GEO_FIXTURES as FIXTURES, geo_run as run_cli
 
 FINDING_KEYS = {"claimed", "conflict", "file", "line", "rule", "severity", "strength"}
 

@@ -1,0 +1,2 @@
+This directory contains notes only. There is no SKILL.md here, so this
+is not a skill package at all.

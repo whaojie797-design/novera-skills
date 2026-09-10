@@ -2,7 +2,7 @@
 
 import pytest
 
-from conftest import FIXTURES, run_cli
+from tests.conftest import PUB_FIXTURES as FIXTURES, pub_run as run_cli
 
 VALIDATE_CASES = [
     ("valid-listing.json", 0),

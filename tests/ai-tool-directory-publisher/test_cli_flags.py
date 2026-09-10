@@ -2,7 +2,7 @@
 
 import json
 
-from conftest import FIXTURES, run_cli
+from tests.conftest import PUB_FIXTURES as FIXTURES, pub_run as run_cli
 
 
 def test_directory_filter_runs_only_selected_spec():
