@@ -13,6 +13,8 @@ on:
       - "tools/**"
       - ".github/workflows/**"
       - "pytest.ini"
+      - "tests/conftest.py"
+      - "tests/__init__.py"
   pull_request:
     branches: [main]
   workflow_dispatch:
