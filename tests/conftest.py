@@ -44,3 +44,9 @@ HAR_SKILL_DIR = SKILLS / "skill-eval-harness"
 HAR_FIXTURES = HAR_SKILL_DIR / "fixtures"
 HAR_E2E_DIR = HAR_FIXTURES / "e2e-demo"
 har_run = _make_runner(HAR_SKILL_DIR / "scripts" / "audit.py")
+
+# --- skill-supply-chain-audit -------------------------------------------
+SCA_SKILL_DIR = SKILLS / "skill-supply-chain-audit"
+SCA_FIXTURES = SCA_SKILL_DIR / "fixtures"
+SCA_E2E_DIR = SCA_FIXTURES / "e2e-pack"
+sca_run = _make_runner(SCA_SKILL_DIR / "scripts" / "audit.py")

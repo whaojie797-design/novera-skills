@@ -1,0 +1,37 @@
+# 跨客户端兼容描述。触发场景集合必须与 SKILL.md description 等价（措辞可不同）。
+name: skill-supply-chain-audit
+version: 0.1.0
+description: >
+  Origin-side supply-chain profiler for third-party Agent Skill packages, fully
+  offline on user-provided snapshots (gh api export JSON, git remote output,
+  marketplace HTML archives). Repository health signals: last-push staleness
+  against the snapshot's fetched_at anchor, maintainer/contributor count, release
+  cadence, open-issue ratio, archived/fork flags. Reference surface: inventory of
+  external URLs and declared script endpoints (listed, not judged), with findings
+  for plaintext http:// endpoints and raw-IP endpoints. Distribution chain:
+  curl|sh install patterns, non-official registry prompts, and name-impersonation
+  signals against a built-in well-known-skill list. Findings carry file:line
+  locations; output formats are text, JSON, and SARIF 2.1.0. Signals only - does
+  NOT judge maliciousness (skill-sentry's scope), does NOT assess package structure
+  quality (skill-eval-harness's scope), and does NOT produce trust scores.
+when_to_use:
+  - Review a third-party skill's provenance and maintenance health before adoption
+  - Analyze repository health from a gh api export snapshot
+  - Inventory external URLs and declared endpoints in a skill package
+  - Check install docs for curl|sh or non-official registry distribution risks
+  - Detect typosquat-style name impersonation against well-known skills
+  - Produce a SARIF 2.1.0 supply-chain audit report in CI
+when_not_to_use:
+  - Detecting malicious code behavior (use skill-sentry)
+  - Evaluating package structure quality (use skill-eval-harness)
+  - Fetching live repository or registry data (offline, snapshots only)
+  - Producing a trust score or safe/unsafe verdict (signals only)
+cli:
+  entry: scripts/audit.py
+  runtime: python3
+  subcommands: [profile, refs, chain]
+  formats: [text, json, sarif]
+  exit_codes:
+    0: no findings
+    1: findings present (risk signals)
+    2: usage or input error

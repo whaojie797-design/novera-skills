@@ -24,7 +24,7 @@ Each skill in this repository audits one class of claims that AI-generated asset
 | 1 | `geo-evidence-audit` | **released** (v0.1.0) | Geo-claim consistency audit |
 | 2 | `ai-tool-directory-publisher` | **released** (v0.1.0) | Directory-submission materials, cross-directory consistency, submission status |
 | 3 | `skill-eval-harness` | **released** (v0.1.0) | Deterministic quality evaluation of Agent Skill packages |
-| 4 | `skill-supply-chain-audit` | planned | Source-side supply-chain profiling for third-party skills (repository health, script network/install surface, permissions, distribution risk) — complements [skill-sentry](https://github.com/whaojie797-design/skill-sentry), which audits skills at runtime locally |
+| 4 | `skill-supply-chain-audit` | **released** (v0.1.0) | Source-side supply-chain profiling for third-party skills (repository health, reference surface, distribution risks) — complements [skill-sentry](https://github.com/whaojie797-design/skill-sentry), which audits skills at runtime locally |
 | 5–10 | *to be defined* | planned | Names and scope not yet fixed |
 
 ## Quick start (geo-evidence-audit)
@@ -112,7 +112,7 @@ MAJOR = breaking change to triggers / CLI / output schema · MINOR = new signals
 | 1 | `geo-evidence-audit` | **已发布**（v0.1.0） | 地理声称一致性审计 |
 | 2 | `ai-tool-directory-publisher` | **已发布**（v0.1.0） | 目录站提交材料、跨目录一致性、提交状态 |
 | 3 | `skill-eval-harness` | **已发布**（v0.1.0） | Agent Skill 包的确定性质量评估 |
-| 4 | `skill-supply-chain-audit` | 规划中 | 第三方 skill 的来源侧供应链画像（仓库健康度、脚本网络/安装面、权限、分发风险）——与 [skill-sentry](https://github.com/whaojie797-design/skill-sentry)（本地运行时审计）互补 |
+| 4 | `skill-supply-chain-audit` | **已发布**（v0.1.0） | 第三方 skill 的来源侧供应链画像（仓库健康度、引用面、分发链路风险）——与 [skill-sentry](https://github.com/whaojie797-design/skill-sentry)（本地运行时审计）互补 |
 | 5–10 | *待定* | 规划中 | 名称与范围尚未确定 |
 
 ## 快速开始（geo-evidence-audit）

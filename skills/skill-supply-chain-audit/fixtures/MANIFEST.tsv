@@ -1,0 +1,20 @@
+﻿# fixture contract for skill-supply-chain-audit self-test fixtures
+# format: relpath<TAB>expected_exit  (expected exit code of the matching subcommand)
+# snapshot entries: profile with the sibling *.json files of the same prefix;
+# package entries: refs/chain against the mini package directory
+# SARIF verification rides on the stale-repo.json entry (--format sarif assertions)
+healthy-repo.json	0
+stale-repo.json	1
+archived-repo.json	1
+no-release-repo.json	1
+fixtures/refs-clean/SKILL.md	0
+fixtures/refs-external/SKILL.md	1
+fixtures/endpoints-raw-ip/SKILL.md	1
+fixtures/chain-curl-sh/SKILL.md	1
+fixtures/npm-official-prompt/SKILL.md	0
+fixtures/npm-unofficial-prompt/SKILL.md	1
+fixtures/same-name-known/SKILL.md	0
+malformed-export.json	2
+schema-missing-export.json	2
+no-fetched-at-export.json	1
+fixtures/e2e-pack/SKILL.md	1

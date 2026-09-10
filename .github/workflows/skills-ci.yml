@@ -10,6 +10,8 @@ on:
       - "tests/ai-tool-directory-publisher/**"
       - "skills/skill-eval-harness/**"
       - "tests/skill-eval-harness/**"
+      - "skills/skill-supply-chain-audit/**"
+      - "tests/skill-supply-chain-audit/**"
       - "tools/**"
       - ".github/workflows/**"
       - "pytest.ini"
@@ -94,6 +96,9 @@ jobs:
 
       - name: Run test suite (skill-eval-harness)
         run: python -m pytest tests/skill-eval-harness/ -q
+
+      - name: Run test suite (skill-supply-chain-audit)
+        run: python -m pytest tests/skill-supply-chain-audit/ -q
 
       # --- bootstrap: the harness evaluates every released skill (novera profile) ---
       - name: Bootstrap - eval-harness evaluates all own skills
