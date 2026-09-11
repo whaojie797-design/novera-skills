@@ -6,6 +6,7 @@ per-skill conftest modules. Test files import their constants via aliases:
     from conftest import GEO_FIXTURES as FIXTURES, geo_run as run_cli
 """
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -16,10 +17,17 @@ SKILLS = REPO_ROOT / "skills"
 
 def _make_runner(audit):
     def run(args, cwd=None):
+        # Force UTF-8 on both sides of the pipe: skills emit CJK text
+        # (findings quote user content), and a Windows CI runner defaults
+        # to the legacy cp1252 codec, which crashes on Chinese output.
+        env = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONUTF8="1")
         proc = subprocess.run(
             [sys.executable, str(audit)] + [str(a) for a in args],
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
+            env=env,
             cwd=str(cwd or REPO_ROOT),
         )
         return proc.returncode, proc.stdout, proc.stderr
