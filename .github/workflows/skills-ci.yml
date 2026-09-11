@@ -12,6 +12,8 @@ on:
       - "tests/skill-eval-harness/**"
       - "skills/skill-supply-chain-audit/**"
       - "tests/skill-supply-chain-audit/**"
+      - "skills/commerce-visual-brief/**"
+      - "tests/commerce-visual-brief/**"
       - "tools/**"
       - ".github/workflows/**"
       - "pytest.ini"
@@ -22,7 +24,7 @@ on:
   workflow_dispatch:
 
 env:
-  SKILLS: "geo-evidence-audit ai-tool-directory-publisher skill-eval-harness"
+  SKILLS: "geo-evidence-audit ai-tool-directory-publisher skill-eval-harness skill-supply-chain-audit commerce-visual-brief"
 
 jobs:
   test:
@@ -41,7 +43,7 @@ jobs:
 
       # --- repo-wide syntax gate over all released skills ---
       - name: py39 syntax gate
-        run: python tools/py39_gate.py skills/geo-evidence-audit/scripts skills/ai-tool-directory-publisher/scripts skills/skill-eval-harness/scripts
+        run: python tools/py39_gate.py skills/geo-evidence-audit/scripts skills/ai-tool-directory-publisher/scripts skills/skill-eval-harness/scripts skills/skill-supply-chain-audit/scripts skills/commerce-visual-brief/scripts
 
       # --- SKILL.md line gates (<500) ---
       - name: SKILL.md line gates
@@ -84,6 +86,24 @@ jobs:
             exit 1
           fi
 
+      - name: stdlib zero-dep gate (skill-supply-chain-audit)
+        shell: bash
+        run: |
+          if grep -rhE --include="*.py" "^(import|from) " skills/skill-supply-chain-audit/scripts/ \
+            | grep -vE "^(import (argparse|ast|chain_rules|checkers|json|os|re|sarif|snapshot|sys)|from (audit|chain_rules|checkers|dataclasses|datetime|report|sarif|snapshot|sys)([ .]|$))"; then
+            echo "::error::non-stdlib import found in skill-supply-chain-audit/scripts/"
+            exit 1
+          fi
+
+      - name: stdlib zero-dep gate (commerce-visual-brief)
+        shell: bash
+        run: |
+          if grep -rhE --include="*.py" "^(import|from) " skills/commerce-visual-brief/scripts/ \
+            | grep -vE "^(import (argparse|brief_data|briefparse|checkers|fnmatch|json|os|platform_specs|re|report|sys)|from (audit|brief_data|briefparse|checkers|dataclasses|platform_specs|report|typing)([ .]|$))"; then
+            echo "::error::non-stdlib import found in commerce-visual-brief/scripts/"
+            exit 1
+          fi
+
       - name: Install pytest
         run: python -m pip install pytest
 
@@ -99,6 +119,9 @@ jobs:
 
       - name: Run test suite (skill-supply-chain-audit)
         run: python -m pytest tests/skill-supply-chain-audit/ -q
+
+      - name: Run test suite (commerce-visual-brief)
+        run: python -m pytest tests/commerce-visual-brief/ -q
 
       # --- bootstrap: the harness evaluates every released skill (novera profile) ---
       - name: Bootstrap - eval-harness evaluates all own skills
@@ -138,4 +161,19 @@ jobs:
             echo "::error::skill-eval-harness: expected exit 2 (no SKILL.md), got 0"
             exit 1
           fi
+          # skill-supply-chain-audit: expected exit 1 on the stale snapshot trio,
+          # exit 0 on the clean refs pack.
+          if python skills/skill-supply-chain-audit/scripts/audit.py profile skills/skill-supply-chain-audit/fixtures/stale-repo.json skills/skill-supply-chain-audit/fixtures/stale-commits.json skills/skill-supply-chain-audit/fixtures/stale-contributors.json > /dev/null; then
+            echo "::error::skill-supply-chain-audit: expected exit 1, got 0"
+            exit 1
+          fi
+          python skills/skill-supply-chain-audit/scripts/audit.py refs skills/skill-supply-chain-audit/fixtures/refs-clean > /dev/null
+          # commerce-visual-brief: expected exit 1 on the extreme-word fixture,
+          # exit 0 on the clean brief; unverified platform skips by default.
+          if python skills/commerce-visual-brief/scripts/audit.py validate skills/commerce-visual-brief/fixtures/extreme-words.md > /dev/null; then
+            echo "::error::commerce-visual-brief: expected exit 1, got 0"
+            exit 1
+          fi
+          python skills/commerce-visual-brief/scripts/audit.py validate skills/commerce-visual-brief/fixtures/valid-brief.md > /dev/null
+          python skills/commerce-visual-brief/scripts/audit.py validate skills/commerce-visual-brief/fixtures/unverified-platform.md --platform taobao > /dev/null
           echo "smoke OK (all skills)"

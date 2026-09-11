@@ -1,0 +1,26 @@
+﻿# commerce-visual-brief fixtures manifest
+# format: relpath<TAB>expected_exit (expected exit is the validate
+# subcommand semantics, run without extra flags; supply-chain-audit
+# precedent). Rows image-spec-mismatch.md / main-image-count.md exercise
+# V6-V9 and therefore exit 0 here; they yield exit 1 with
+# --platform amazon (verified snapshot baseline). unverified-platform.md
+# yields an "unverified" annotation with --platform taobao
+# --include-unverified. See references/data-provenance.md for why the
+# snapshot baseline is amazon (taobao/tmall/jd/pdd entries unverified).
+valid-brief.md	0
+valid-brief.json	0
+missing-pricing.md	1
+missing-color-card.md	1
+currency-mismatch.md	1
+extreme-words.md	1
+claim-no-evidence.md	1
+category-scene-mismatch.md	1
+image-spec-mismatch.md	0
+main-image-count.md	0
+missing-compliance-decl.md	1
+no-brief-structure.md	2
+empty.txt	2
+comparative-words.md	0
+e2e-mixed-dir	1
+category-scene-unknown.md	0
+unverified-platform.md	0

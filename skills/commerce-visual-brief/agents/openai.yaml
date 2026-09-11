@@ -1,0 +1,39 @@
+# 跨客户端兼容描述。触发场景集合必须与 SKILL.md description 等价（措辞可不同）。
+name: commerce-visual-brief
+version: 0.1.0
+description: >
+  Deterministic, offline validator for e-commerce visual brief documents (product
+  photo / design requirement sheets). Checks required-field completeness (product
+  name, pricing, size chart, color cards, category-specific compliance
+  declarations), cross-field consistency (price vs currency/locale, selling-point
+  claims vs evidence image placements, category vs scene settings), and declared
+  image specs (dimensions, ratio, format, main-image count, whitespace) against
+  built-in per-platform requirement snapshots (verified entries only by default;
+  unverified entries are skipped unless --include-unverified is passed, and are
+  then annotated as "unverified, not checkable" - never fabricated). Platform
+  snapshots age: the platform's own rules are always authoritative. Flags
+  extreme-word compliance risks via lexicon matching - risk hints only, never
+  legal determinations. Brief text only; does NOT read image files, does NOT
+  generate briefs, and does NOT predict conversion or ad-review outcomes. Emits
+  findings with file:line in text or JSON, plus a non-judgmental
+  image-placement inventory.
+when_to_use:
+  - Pre-flight check of a photo/design brief before sending it to a creative team
+  - Find missing required fields or category-specific compliance declarations in a brief
+  - Verify price/currency/locale consistency across brief sections
+  - Check selling-point claims against evidence image placements
+  - Validate declared image specs against a platform's published requirements
+  - Hint extreme-word compliance risks and inventory image placements
+when_not_to_use:
+  - Generating a brief (validator only; write with the template reference, then validate)
+  - Analyzing image files or judging photo quality (text declarations only)
+  - Legal determinations of ad-law violations (lexicon hints only)
+  - Directory listings (ai-tool-directory-publisher) or geo claims (geo-evidence-audit)
+cli:
+  entry: scripts/audit.py
+  runtime: python3
+  subcommands: [validate, inventory]
+  exit_codes:
+    0: no findings
+    1: findings present (validation issues or risk hints)
+    2: usage or input error (bad flags, missing path, or no brief structure found)

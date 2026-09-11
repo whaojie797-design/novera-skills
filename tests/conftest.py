@@ -50,3 +50,18 @@ SCA_SKILL_DIR = SKILLS / "skill-supply-chain-audit"
 SCA_FIXTURES = SCA_SKILL_DIR / "fixtures"
 SCA_E2E_DIR = SCA_FIXTURES / "e2e-pack"
 sca_run = _make_runner(SCA_SKILL_DIR / "scripts" / "audit.py")
+
+# --- commerce-visual-brief ----------------------------------------------
+CVB_SKILL_DIR = SKILLS / "commerce-visual-brief"
+CVB_FIXTURES = CVB_SKILL_DIR / "fixtures"
+CVB_E2E_DIR = CVB_FIXTURES / "e2e-mixed-dir"
+cvb_run = _make_runner(CVB_SKILL_DIR / "scripts" / "audit.py")
+
+
+def mini_dir(name):
+    """Deterministic overwrite-only mini directory (deletion-free by
+    design: local safe-delete hooks fail closed on bulk cleanups; CI is
+    unaffected). Lives under the gitignored .pytest_cache."""
+    d = REPO_ROOT / ".pytest_cache" / "mini" / name
+    d.mkdir(parents=True, exist_ok=True)
+    return d
